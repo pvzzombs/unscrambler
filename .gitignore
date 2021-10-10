@@ -1,0 +1,13 @@
+*.vscode
+.vscode
+.vscode/*.*
+temp
+build
+bin
+binary
+object
+obj
+
+*.exe
+*.o
+*.gch
