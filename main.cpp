@@ -63,6 +63,11 @@ void load_settings(std::ifstream &settings, std::string &dictionary_file){
 void preload_dictionary(const std::string& dictionary_file){
   std::string temporary;
   std::ifstream file(dictionary_file.c_str());
+
+  if(dictionary.size() > 0){
+    dictionary.clear();
+  }
+
   if(file.is_open()){
     std::cout << "Dictionary file found, loading dictionary..." << std::endl;
     while(!file.eof()){
