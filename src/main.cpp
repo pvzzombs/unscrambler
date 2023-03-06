@@ -1,8 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
-#include <algorithm>
 #include <unordered_map>
+#include "unscramble.hpp"
 
 using namespace std;
 
@@ -45,8 +45,8 @@ void showHelp(const string& program)
     cout << "FORMAT: " << endl;
     cout << program << " <OPTIONS> <WORD>" << endl;
     cout << "OPTIONS: " << endl;
-    cout << "-h, --help              show help text" << endl;
-    cout << "-u, --unscramble        unscramble word" << endl;
+    cout << "-h, --help              Show help text" << endl;
+    cout << "-u, --unscramble        Unscramble word" << endl;
 }
 
 string getProgramName(char c[])
@@ -75,15 +75,14 @@ string getWord(const vector<string>& args)
 {
     for(int i = 0; i < args.size(); i++) {
         if(isalpha(args[i][0])) {
-            return args[i];
+            string temp = args[i];
+            for(int j = 0; j < temp.size(); j++) { // lowercase all characters
+                temp[j] = tolower(temp[j]);
+            }
+            return temp;
         }
     }
     return string();
-}
-
-vector<string> unscramble(const vector<string>& dictionary, const string& target)
-{
-    
 }
 
 int main(int argc, char* argv[])
@@ -93,19 +92,25 @@ int main(int argc, char* argv[])
     string program_name = getProgramName(argv[0]);
     args.assign(argv+1, argv+argc);
     setOptions(args, options);
-    if(options.at("-h") || options.at("--help")) {
+    if(args.empty() || options.at("-h") || options.at("--help")) {
         showHelp(program_name);
+        return 0;
     }
 
-    string input = getWord(args);
-    cout << "Word: " << input << endl;
-    if(input.empty()) {
+    string target = getWord(args);
+    cout << "Word: " << target << endl;
+    if(target.empty()) {
         errorMessage("No word specified", program_name);
         return 0;
     }
-    vector<string> dict;
-    initializeDictionary(dict);
+
+    vector<string> dictionary;
+    initializeDictionary(dictionary);
     vector<string> output;
+    if(options.at("-u") || options.at("--unscramble")) {
+        output = unscramble(dictionary, target);
+    }
+    print(output);
 
     return 0;
 }
