@@ -39,41 +39,46 @@ void showHelp(const string& program)
 
 unordered_map<string, string> getConfigValues()
 {
-    ifstream config("../../config.txt");
-    unordered_map<string, string> m;
-    string temp;
-    if(config.is_open()) {
-        while(getline(config, temp)) {
-            string key, value;
-            int i = 0;
-            while(i < temp.size() && (temp[i] != '=' && temp[i] != ':')) {
-                key.push_back(temp[i]);
-                i++;
-            }
-            while(key.back() == ' ') { // remove trailing whitespace
-                key.pop_back();
-            }
-            i++; // move forward
-            while(i < temp.size() && temp[i] == ' ') { // ignore whitespaces
-                i++;
-            }
-            if(temp[i] == '"') {
-                i++;
-                while(i < temp.size() && temp[i] != '"') {
-                    value.push_back(temp[i]);
-                    i++;
+    unordered_map<string, string> config;
+    ifstream file("D:/Documents/Codes/VS Code/C++/Unscrambler/config.txt");
+    if(file.is_open()) {
+        string line;
+        while (getline(file, line)) {
+            // Find the position of the separator
+            size_t pos = line.find_first_of("=:");
+            if (pos != string::npos) {
+                // Extract the key and value from the line
+                string key = line.substr(0, pos);
+                string value;
+                size_t value_start_pos = line.find_first_not_of(" \t", pos+1); // Start of the value
+                if (value_start_pos != string::npos) { // Value exists
+                    if (line[value_start_pos] == '\"') { // Enclosed in quotes
+                        size_t value_end_pos = line.find_first_of("\"", value_start_pos+1); // End of the value
+                        if (value_end_pos != string::npos) {
+                            value = line.substr(value_start_pos+1, value_end_pos-value_start_pos-1); // Extract the value between the quotes
+                        }
+                    } else { // Not enclosed in quotes
+                        size_t value_end_pos = line.find_first_of(" \t", value_start_pos); // End of the value
+                        if (value_end_pos != string::npos) {
+                            value = line.substr(value_start_pos, value_end_pos-value_start_pos); // Extract the value
+                        } else {
+                            value = line.substr(value_start_pos); // Extract the value until the end of the line
+                        }
+                    }
                 }
-            } else {
-                while(i < temp.size() && temp[i] != ' ') {
-                    value.push_back(temp[i]);
-                    i++;
-                }
+                // Remove leading and trailing whitespace from the key and value
+                key.erase(0, key.find_first_not_of(" \t"));
+                key.erase(key.find_last_not_of(" \t") + 1);
+                value.erase(0, value.find_first_not_of(" \t"));
+                value.erase(value.find_last_not_of(" \t") + 1);
+                // Add the key-value pair to the config map
+                config[key] = value;
             }
-            m.insert({key, value});
         }
+    } else {
+        cout << "[Error] Could not open file" << endl;
     }
-    config.close();
-    return m;
+    return config;
 }
 
 string getProgramName(char c[])
