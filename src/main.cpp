@@ -22,6 +22,13 @@ void print(const unordered_map<K, V>& m)
     }
 }
 
+void printConfig(const unordered_map<string, string>& config)
+{
+    for(const auto& i : config) {
+        cout << i.first << ": " << i.second << endl;
+    }
+}
+
 void initializeDictionary(vector<string>& dict)
 {
     ifstream dictionary("../../dictionary.txt");
@@ -40,16 +47,22 @@ void errorMessage(const string& error, const string& program)
     cout << "Try: " << program << " -h" << endl;
 }
 
-void showHelp(const string& program)
+void showHelp(const string& program, const unordered_map<string, string>& config)
 {
     cout << "FORMAT: " << endl;
     cout << program << " <OPTIONS> <WORD>" << endl;
+    cout << program << " -L <LANGUAGE> <OPTION> <WORD>" << endl;
+    cout << "EXAMPLE:" << endl;
+    cout << program << " -L Filipino -u ptutnagnai" << endl;
     cout << "OPTIONS: " << endl;
     cout << "-h, --help              Show help text" << endl;
     cout << "-u, --unscramble        Unscramble word" << endl;
+    cout << "-L, --Language          Select language" << endl;
     cout << "SUPPORTED LANGUAGES:" << endl;
     cout << "English" << endl;
     cout << "Filipino" << endl;
+    cout << "CONFIG:" << endl;
+    printConfig(config);
 }
 
 bool isValidLanguage(string language) 
@@ -202,17 +215,15 @@ void setLanguageToDictionary(string language, string& dictionary)
 int main(int argc, char* argv[])
 {
     vector<string> args;
-    unordered_map<string, string> config;
+    unordered_map<string, string> config = readConfig();
     unordered_map<string, bool> options = {{"-h", 0}, {"--help", 0}, {"-u", 0}, {"--unscramble", 0}, {"-L", 0}, {"--Language", 0}};
     string program_name = getProgramName(argv[0]);
     args.assign(argv+1, argv+argc);
     setOptions(args, options);
     if(args.empty() || options.at("-h") || options.at("--help")) {
-        showHelp(program_name);
+        showHelp(program_name, config);
         return 0;
     }
-
-    config = readConfig();
 
     string target = getWord(args);
     if(target.empty()) {
