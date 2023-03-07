@@ -47,55 +47,80 @@ void showHelp(const string& program)
     cout << "OPTIONS: " << endl;
     cout << "-h, --help              Show help text" << endl;
     cout << "-u, --unscramble        Unscramble word" << endl;
+    cout << "SUPPORTED LANGUAGES:" << endl;
+    cout << "English" << endl;
+    cout << "Filipino" << endl;
 }
 
-<<<<<<< HEAD
-unordered_map<string, string> getConfigValues()
+bool isValidLanguage(string language) 
 {
-    unordered_map<string, string> config;
-    ifstream file("D:/Documents/Codes/VS Code/C++/Unscrambler/config.txt");
-    if(file.is_open()) {
-        string line;
-        while (getline(file, line)) {
-            // Find the position of the separator
-            size_t pos = line.find_first_of("=:");
-            if (pos != string::npos) {
-                // Extract the key and value from the line
-                string key = line.substr(0, pos);
-                string value;
-                size_t value_start_pos = line.find_first_not_of(" \t", pos+1); // Start of the value
-                if (value_start_pos != string::npos) { // Value exists
-                    if (line[value_start_pos] == '\"') { // Enclosed in quotes
-                        size_t value_end_pos = line.find_first_of("\"", value_start_pos+1); // End of the value
-                        if (value_end_pos != string::npos) {
-                            value = line.substr(value_start_pos+1, value_end_pos-value_start_pos-1); // Extract the value between the quotes
-                        }
-                    } else { // Not enclosed in quotes
-                        size_t value_end_pos = line.find_first_of(" \t", value_start_pos); // End of the value
-                        if (value_end_pos != string::npos) {
-                            value = line.substr(value_start_pos, value_end_pos-value_start_pos); // Extract the value
-                        } else {
-                            value = line.substr(value_start_pos); // Extract the value until the end of the line
-                        }
-                    }
-                }
-                // Remove leading and trailing whitespace from the key and value
-                key.erase(0, key.find_first_not_of(" \t"));
-                key.erase(key.find_last_not_of(" \t") + 1);
-                value.erase(0, value.find_first_not_of(" \t"));
-                value.erase(value.find_last_not_of(" \t") + 1);
-                // Add the key-value pair to the config map
-                config[key] = value;
+    for(int i = 0; i < language.size(); i++) {
+        language[i] = tolower(language[i]);
+    }
+    if(language == "english") {
+        return true;
+    } else if(language == "filipino") {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool isForWord(const string& arg)
+{
+    if(arg == "-u" || arg == "--unscramble") {
+        return true;
+    } else if(arg == "-c" || arg == "--complete") {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+unordered_map<string, string> readConfig()
+{
+    ifstream config("D:/Documents/Codes/VS Code/C++/Unscrambler/config.txt");
+    unordered_map<string, string> m;
+    string temp;
+    if(config.is_open()) {
+        while(getline(config, temp)) {
+            if(temp[0] == '#' || temp[0] == ' ') {
+                continue;
             }
+            string key, value;
+            int i = 0;
+            while(i < temp.size() && (temp[i] != '=' && temp[i] != ':')) {
+                key.push_back(temp[i]);
+                i++;
+            }
+            while(key.back() == ' ') { // remove trailing whitespace
+                key.pop_back();
+            }
+            i++; // move forward
+            while(i < temp.size() && temp[i] == ' ') { // ignore whitespaces
+                i++;
+            }
+            if(temp[i] == '"') {
+                i++; // move forward
+                while(i < temp.size() && temp[i] != '"') {
+                    value.push_back(temp[i]);
+                    i++;
+                }
+            } else {
+                while(i < temp.size() && temp[i] != ' ') {
+                    value.push_back(temp[i]);
+                    i++;
+                }
+            }
+            m.insert({key, value});
         }
     } else {
-        cout << "[Error] Could not open file" << endl;
+        cout << "[Error] Could not open configuration file" << endl;
     }
-    return config;
+    config.close();
+    return m;
 }
 
-=======
->>>>>>> parent of 375568a (Saved)
 string getProgramName(char c[])
 {
     string name;
@@ -121,8 +146,8 @@ void setOptions(const vector<string>& args, unordered_map<string, bool>& options
 string getWord(const vector<string>& args)
 {
     for(int i = 0; i < args.size(); i++) {
-        if(isalpha(args[i][0])) {
-            string temp = args[i];
+        if(isForWord(args[i]) && isalpha(args[i+1][0])) {
+            string temp = args[i+1];
             for(int j = 0; j < temp.size(); j++) { // lowercase all characters
                 temp[j] = tolower(temp[j]);
             }
@@ -132,10 +157,53 @@ string getWord(const vector<string>& args)
     return string();
 }
 
+string getLanguage(const vector<string>& args, const unordered_map<string, string>& config)
+{
+    string language;
+    for(int i = 0; i < args.size(); i++) {
+        if((args[i] == "-L" || args[i] == "--Language") && isalpha(args[i+1][0])) {
+            language = args[i+1];
+            break;
+        }
+    }
+    if(language.empty()) {
+        return config.at("DefaultLanguage");
+    }
+    if(!isValidLanguage(language)) {
+        cout << "[Error] Language '" << language << "' is not supported" << endl;
+        cout << "Try the '-h' option to see supported languages" << endl;
+        return string();
+    }
+    return language;
+}
+
+void setLanguageToDictionary(string language, string& dictionary)
+{
+    if(dictionary.back() != '/') {
+        for(int i = dictionary.size()-1; i >= 0; i--) {
+            if(dictionary[i] == '.') { // must be a file
+                return;
+            } else if(dictionary[i] == '/') {
+                dictionary += "/";
+                break;
+            }
+        }
+    }
+    for(int i = 0; i < language.size(); i++) {
+        language[i] = tolower(language[i]);
+    }
+    if(language == "english") {
+        dictionary += "english.txt";
+    } else if(language == "filipino") {
+        dictionary += "filipino.txt";
+    }
+}
+
 int main(int argc, char* argv[])
 {
     vector<string> args;
-    unordered_map<string, bool> options = {{"-h", 0}, {"--help", 0}, {"-u", 0}, {"--unscramble", 0}};
+    unordered_map<string, string> config;
+    unordered_map<string, bool> options = {{"-h", 0}, {"--help", 0}, {"-u", 0}, {"--unscramble", 0}, {"-L", 0}, {"--Language", 0}};
     string program_name = getProgramName(argv[0]);
     args.assign(argv+1, argv+argc);
     setOptions(args, options);
@@ -144,20 +212,25 @@ int main(int argc, char* argv[])
         return 0;
     }
 
+    config = readConfig();
+
     string target = getWord(args);
-    cout << "Word: " << target << endl;
     if(target.empty()) {
         errorMessage("No word specified", program_name);
         return 0;
     }
 
-    // vector<string> dictionary;
-    // initializeDictionary(dictionary);
+    string dictionary_path = config.at("DictionaryPath");
+    string language = getLanguage(args, config);
+    setLanguageToDictionary(language, dictionary_path);
+
     vector<string> output;
     if(options.at("-u") || options.at("--unscramble")) {
-        output = unscramble(target);
+        output = unscramble(target, dictionary_path);
     }
+    cout << "Language: " << language << endl;
+    cout << "Word: " << target << endl;
+    cout << "=====MATCHES====" << endl;
     print(output);
-
     return 0;
 }
