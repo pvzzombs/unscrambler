@@ -2,6 +2,7 @@
 #include <vector>
 #include <unordered_map>
 #include <cctype>
+#include <fstream>
 #include "unscramble.hpp"
 
 using namespace std;
@@ -23,12 +24,14 @@ bool isAnagram(const string& word1, const string& word2)
     return freq1 == freq2; // if key and values are equal, return true
 }
 
-vector<string> unscramble(const vector<string>& dictionary, const string& target)
+vector<string> unscramble(const string& target)
 {
+    ifstream dict("../../dictionary/english.txt");
     vector<string> output;
-    for(int i = 0; i < dictionary.size(); i++) {
-        if(isAnagram(target, dictionary[i])) {
-            output.push_back(dictionary[i]);
+    string word;
+    while(dict.is_open() && dict >> word) {
+        if(isAnagram(target, word)) {
+            output.push_back(word);
         }
     }
     return output;

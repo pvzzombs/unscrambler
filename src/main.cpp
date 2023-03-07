@@ -104,11 +104,11 @@ int main(int argc, char* argv[])
         return 0;
     }
 
-    vector<string> dictionary;
-    initializeDictionary(dictionary);
+    // vector<string> dictionary;
+    // initializeDictionary(dictionary);
     vector<string> output;
     if(options.at("-u") || options.at("--unscramble")) {
-        output = unscramble(dictionary, target);
+        output = unscramble(target);
     }
     print(output);
 
