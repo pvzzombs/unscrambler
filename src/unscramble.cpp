@@ -34,6 +34,5 @@ vector<string> unscramble(const string& target)
             output.push_back(word);
         }
     }
-    dict.close();
     return output;
 }
