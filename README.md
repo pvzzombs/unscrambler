@@ -6,10 +6,10 @@ Unscrambler is a command line tool that unshuffles a shuffled word among other t
 Unscrambler.exe <OPTIONS> <WORD>
 Unscrambler.exe -L <LANGUAGE> <OPTION> <WORD>
 ```
-### Example
+### Usage
 ```
-Unscrambler.exe  -u srtekri
-Unscrambler.exe  -L Filipino -u putnagnai
+Unscrambler.exe -u srtekri
+Unscrambler.exe -L Filipino -u putnagnai
 ```
 ### Options
 ```
@@ -17,6 +17,14 @@ Unscrambler.exe  -L Filipino -u putnagnai
 -u, --unscramble       Unscramble the input word into an actual word
 -c, --complete         Complete the unfinished input word into an actual word
 ```
+### Language
+```
+-L, --Language         Specify language
+```
+### Supported Languages
+* English
+* Filipino
+
 
 
 
