@@ -24,15 +24,19 @@ bool isAnagram(const string& word1, const string& word2)
     return freq1 == freq2; // if key and values are equal, return true
 }
 
-vector<string> unscramble(const string& target, string path)
+vector<string> unscramble(const string& target, const string& path)
 {
     ifstream dict(path);
     vector<string> output;
     string word;
-    while(dict.is_open() && dict >> word) {
-        if(isAnagram(target, word)) {
-            output.push_back(word);
+    if(dict.is_open()) {
+        while(dict >> word) {
+            if(isAnagram(target, word)) {
+                output.push_back(word);
+            }
         }
+    } else {
+        cout << "[Error] Could not open dictionary \"" << path << "\"" << endl;
     }
     return output;
 }
