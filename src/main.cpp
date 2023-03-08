@@ -54,7 +54,7 @@ void showHelp(const string& program, const unordered_map<string, string>& config
 
 unordered_map<string, string> readConfig()
 {
-    ifstream config("D:/Documents/Codes/VS Code/C++/Unscrambler/config.txt");
+    ifstream config("../../config.txt");
     unordered_map<string, string> m;
     string temp;
     if(config.is_open()) {
