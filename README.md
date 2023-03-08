@@ -17,3 +17,6 @@ Unscrambler.exe  -L Filipino -u putnagnai
 -u, --unscramble       Unscramble the input word into an actual word
 -c, --complete         Complete the unfinished input word into an actual word
 ```
+
+
+

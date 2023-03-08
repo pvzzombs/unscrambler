@@ -54,7 +54,7 @@ void showHelp(const string& program, const unordered_map<string, string>& config
 
 unordered_map<string, string> readConfig()
 {
-    ifstream config("../../config.txt");
+    ifstream config("../../dictionary/config.txt");
     unordered_map<string, string> m;
     string temp;
     if(config.is_open()) {

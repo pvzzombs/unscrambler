@@ -1,3 +1,0 @@
-# End the path with a '/' if you are specifying a directory
-DictionaryPath: "../../dictionary/"
-DefaultLanguage: English
