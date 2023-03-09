@@ -22,13 +22,13 @@ cmake --build .
 ## How To Use
 ### Format
 ```
-Unscrambler.exe <OPTIONS> <WORD>
-Unscrambler.exe -L <LANGUAGE> <OPTION> <WORD>
+Unscrambler <OPTIONS> <WORD>
+Unscrambler -L <LANGUAGE> <OPTION> <WORD>
 ```
 ### Usage
 ```
-Unscrambler.exe -u srtekri
-Unscrambler.exe -L Filipino -u putnagnai
+Unscrambler -u srtekri
+Unscrambler -L Filipino -u putnagnai
 ```
 ### Options
 ```
