@@ -19,6 +19,7 @@ Unscrambler.exe -L Filipino -u putnagnai
 -h, --help             Show help text
 -u, --unscramble       Unscramble the input word into an actual word
 -c, --complete         Complete the unfinished input word into an actual word
+-s, --substring        Give words that make up the input word
 ```
 ### Language
 ```
@@ -27,6 +28,7 @@ Unscrambler.exe -L Filipino -u putnagnai
 ### Supported Languages
 * English
 * Filipino
+
 
 
 

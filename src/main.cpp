@@ -3,6 +3,7 @@
 #include <fstream>
 #include <unordered_map>
 #include "dictionary.hpp"
+#include "substring.hpp"
 #include "unscramble.hpp"
 #include "complete.hpp"
 
@@ -140,10 +141,13 @@ int main(int argc, char* argv[])
     vector<string> args;
     unordered_map<string, string> config = readConfig();
     unordered_map<string, bool> options = {{"-h", 0}, {"--help", 0}, {"-u", 0}, {"--unscramble", 0}, {"-c", 0}, {"--complete", 0},
-    {"-L", 0}, {"--Language", 0}};
+    {"-s", 0}, {"--substring", 0}, {"-L", 0}, {"--Language", 0}};
     string program_name = getProgramName(argv[0]);
     args.assign(argv+1, argv+argc);
     setOptions(args, options);
+    // print(args);
+    // cout << "===Options===" << endl;
+    // print(options);
     if(args.empty() || options.at("-h") || options.at("--help")) {
         showHelp(program_name, config);
         return 0;
@@ -167,9 +171,11 @@ int main(int argc, char* argv[])
 
     vector<string> output;
     if(options.at("-u") || options.at("--unscramble")) {
-        output = unscramble(target, dictionary_path);
+        output = unscramble(target, dictionary_path, options);
     } else if(options.at("-c") || options.at("--complete")) {
         output = complete(target, dictionary_path);
+    } else if(options.at("-s") || options.at("--substring")) {
+        output = substring(target, dictionary_path);
     } else {
         cout << "[Error] No option specified for word" << endl;
         cout << "Try the '-h' option to see available options" << endl;
