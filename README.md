@@ -3,6 +3,22 @@ Unscrambler is a command line tool that unshuffles a shuffled word among other t
 
 ![Language](https://img.shields.io/badge/Language-C%2B%2B%0A-success.svg)
 
+## Building  
+
+### Instructions: 
+1. Clone this repo using git
+```
+git clone https://github.com/pvzzombs/unscrambler.git
+cd unscrambler
+```
+2. Configure and build using cmake
+```
+mkdir build && cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release -DLINK_STATIC=0
+cmake --build .
+```
+3. Done!
+
 ## How To Use
 ### Format
 ```
