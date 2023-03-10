@@ -2,6 +2,7 @@
 Unscrambler is a command line tool that unshuffles a shuffled word among other things.
 
 ![Language](https://img.shields.io/badge/Language-C%2B%2B%0A-success.svg)
+[![CodeFactor](https://www.codefactor.io/repository/github/pvzzombs/unscrambler/badge)](https://www.codefactor.io/repository/github/pvzzombs/unscrambler)
 
 ## Building  
 
