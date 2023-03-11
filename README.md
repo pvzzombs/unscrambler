@@ -47,6 +47,13 @@ Unscrambler -L Filipino -u putnagnai
 ### Supported Languages
 * English
 * Filipino
+### Add Configuration File
+```
+--config="path/to/config.txt"
+```
+### Configuration Options
+* DictionaryPath
+* DefaultLanguage
 
 
 
