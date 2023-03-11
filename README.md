@@ -4,6 +4,7 @@ Unscrambler is a command line tool that unshuffles a shuffled word among other t
 ![Language](https://img.shields.io/badge/Language-C%2B%2B%0A-success.svg)
 [![CodeFactor](https://www.codefactor.io/repository/github/pvzzombs/unscrambler/badge)](https://www.codefactor.io/repository/github/pvzzombs/unscrambler)
 [![CircleCI](https://dl.circleci.com/status-badge/img/gh/pvzzombs/unscrambler/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/pvzzombs/unscrambler/tree/main)
+[![Build status](https://ci.appveyor.com/api/projects/status/89l84c8uaj9ei7q3?svg=true)](https://ci.appveyor.com/project/pvzzombs/unscrambler)
 
 ## Building  
 
