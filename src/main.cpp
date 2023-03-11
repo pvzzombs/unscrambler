@@ -2,6 +2,7 @@
 #include <vector>
 #include <fstream>
 #include <unordered_map>
+#include <string>
 #include "dictionary.hpp"
 #include "substring.hpp"
 #include "unscramble.hpp"
