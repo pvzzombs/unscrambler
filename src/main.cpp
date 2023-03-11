@@ -51,7 +51,9 @@ void showHelp(const string& program, const unordered_map<string, string>& config
     cout << "SUPPORTED LANGUAGES:" << endl;
     cout << "English" << endl;
     cout << "Filipino" << endl;
-    cout << "CONFIG:" << endl;
+    cout << "ADD CONFIGURATION FILE:" << endl;
+    cout << "--config=\"path/to/config.txt\"" << endl;
+    cout << "CONFIG OPTIONS:" << endl;
     printConfig(config);
 }
 
