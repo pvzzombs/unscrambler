@@ -1,0 +1,9 @@
+init:
+  - cmake --version
+
+build_script:
+  - mkdir build
+  - cd build
+  - cmake .. -DCMAKE_BUILD_TYPE=Release -DLINK_STATIC=0
+  - cmake --build .
+
