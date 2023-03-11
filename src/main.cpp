@@ -44,6 +44,7 @@ void showHelp(const string& program, const unordered_map<string, string>& config
     cout << "-h, --help              Show help text" << endl;
     cout << "-u, --unscramble        Unscramble word" << endl;
     cout << "-c, --complete          Complete word" << endl;
+    cout << "-s, --substring         Give the ordered substrings of the word" << endl;
     cout << "LANGUAGE: " << endl;
     cout << "-L, --Language          Specify language" << endl;
     cout << "SUPPORTED LANGUAGES:" << endl;
