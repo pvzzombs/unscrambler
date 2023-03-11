@@ -67,7 +67,7 @@ unordered_map<string, string> readConfig()
             }
             string key, value;
             int i = 0;
-            while(i < temp.size() && (temp[i] != '=' && temp[i] != ':')) {
+            while(i < temp.size() && (temp[i] != '=' && temp[i] != ':')) { // move forward until we reach a separator
                 key.push_back(temp[i]);
                 i++;
             }
@@ -89,6 +89,9 @@ unordered_map<string, string> readConfig()
                     value.push_back(temp[i]);
                     i++;
                 }
+            }
+            while(value.back() == ' ') {
+                value.pop_back();
             }
             m.insert({key, value});
         }
