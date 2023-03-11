@@ -55,9 +55,39 @@ void showHelp(const string& program, const unordered_map<string, string>& config
     printConfig(config);
 }
 
-unordered_map<string, string> readConfig()
+string getConfigPath(vector<string>& args)
 {
-    ifstream config("../../dictionary/config.txt");
+    for(int i = 0; i < args.size(); i++) {
+        if(args[i][0] == '-') {
+            string temp;
+            int j;
+            for(j = 0; j < args[i].size(); j++) {
+                if(args[i][j] == '=') {
+                    break;
+                }
+                temp.push_back(args[i][j]);
+            }
+            if(temp == "--config") {
+                string dir;
+                j++;
+                while(j < args[i].size()) {
+                    dir.push_back(args[i][j]);
+                    j++;
+                }
+                while(dir.back() == ' ') {
+                    dir.pop_back();
+                }
+                args.erase(args.begin()+i);
+                return dir;
+            }
+        }
+    }
+    return "config.txt";
+}
+
+unordered_map<string, string> readConfig(string config_path)
+{
+    ifstream config(config_path);
     unordered_map<string, string> m;
     string temp;
     if(config.is_open()) {
@@ -96,7 +126,7 @@ unordered_map<string, string> readConfig()
             m.insert({key, value});
         }
     } else {
-        cout << "[Error] Could not open configuration file" << endl;
+        cout << "[Error] Could not open configuration file \"" << config_path << "\"" << endl;
     }
     config.close();
     return m;
@@ -144,15 +174,15 @@ string getWord(const vector<string>& args)
 int main(int argc, char* argv[])
 {
     vector<string> args;
-    unordered_map<string, string> config = readConfig();
-    unordered_map<string, bool> options = {{"-h", 0}, {"--help", 0}, {"-u", 0}, {"--unscramble", 0}, {"-c", 0}, {"--complete", 0},
-    {"-s", 0}, {"--substring", 0}, {"-L", 0}, {"--Language", 0}};
     string program_name = getProgramName(argv[0]);
     args.assign(argv+1, argv+argc);
+    unordered_map<string, string> config = readConfig(getConfigPath(args));
+    if(config.empty()) {
+        return 0;
+    }
+    unordered_map<string, bool> options = {{"-h", 0}, {"--help", 0}, {"-u", 0}, {"--unscramble", 0}, {"-c", 0}, {"--complete", 0},
+    {"-s", 0}, {"--substring", 0}, {"-L", 0}, {"--Language", 0}};
     setOptions(args, options);
-    // print(args);
-    // cout << "===Options===" << endl;
-    // print(options);
     if(args.empty() || options.at("-h") || options.at("--help")) {
         showHelp(program_name, config);
         return 0;
