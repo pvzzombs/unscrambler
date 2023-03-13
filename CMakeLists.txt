@@ -14,5 +14,7 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 if(LINK_STATIC)
-  target_link_libraries(${PROJECT_NAME} PRIVATE -static-libgcc -static-libstdc++)
+  if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MINGW" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    target_link_libraries(${PROJECT_NAME} PRIVATE -static-libgcc -static-libstdc++)
+  endif()
 endif()
