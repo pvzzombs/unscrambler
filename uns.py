@@ -17,7 +17,7 @@ def process_discord_cmd(str1):
 
 def run_process(arr1):
   output = ""
-  cmd_str = "cd bin/Release/ && ./uns "
+  cmd_str = 'cd bin/Release/ && ./uns --config="../../dictionary/config.txt" '
   for i in range(1, len(arr1)):
       cmd_str += arr1[i] + " "
   #print(cmd_str)
