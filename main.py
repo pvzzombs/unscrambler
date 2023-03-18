@@ -19,7 +19,13 @@ async def on_message(message):
         return
 
     if message.content.startswith('$uns'):
-        await message.channel.send(process_discord_cmd(message.content))
+        #counter = 0
+        results = []
+        result_str = process_discord_cmd(message.content)
+        for c in range(0, len(result_str), 1000):
+            results.append(result_str[c:c+1000])
+        for x in results:
+            await message.channel.send(x)
 
     #await client.process_commands(message)
 
