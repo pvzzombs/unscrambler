@@ -221,6 +221,10 @@ int main(int argc, char* argv[])
     cout << "Language: " << language << endl;
     cout << "Word: " << target << endl;
     cout << "=====MATCHES====" << endl;
-    print(output);
+    if(output.empty()){
+        cout << "<No words match>" << endl;
+    }else{
+        print(output);
+    }
     return 0;
 }
