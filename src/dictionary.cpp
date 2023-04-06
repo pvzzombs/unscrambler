@@ -52,7 +52,7 @@ string setDictionaryFile(string language, const unordered_map<string, string>& c
         for(int i = dictionary.size()-1; i >= 0; i--) {
             if(dictionary[i] == '.') { // must be a file
                 break;
-            } else if(dictionary[i] == '/') {
+            } else if(dictionary[i] == '/' || i == 0) {
                 dictionary += "/";
                 break;
             }
