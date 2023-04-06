@@ -223,7 +223,7 @@ int main(int argc, char* argv[])
     cout << "=====MATCHES====" << endl;
     if(output.empty()){
         cout << "<No words match>" << endl;
-    }else{
+    } else {
         print(output);
     }
     return 0;
