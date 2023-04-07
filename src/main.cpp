@@ -84,7 +84,11 @@ string getConfigPath(vector<string>& args)
             }
         }
     }
-    return "config.txt";
+    #ifdef NDEBUG
+        return "config.txt";
+    #else
+        return "../../dictionary/config.txt";
+    #endif
 }
 
 unordered_map<string, string> readConfig(string config_path)
