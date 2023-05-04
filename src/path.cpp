@@ -1,7 +1,9 @@
 #include <string>
 #include <filesystem>
 #include <unistd.h>
-#include <windows.h>
+#ifdef _WIN32
+    #include <windows.h>
+#endif
 #include "path.hpp"
 
 using namespace std;
@@ -75,10 +77,17 @@ string getCallPath()
 
 string getExecutableFilePath()
 {
-    char path[MAX_PATH];
-    GetModuleFileName(NULL, path, MAX_PATH);
-    string p(path);
-    filesystem::path pth(p);
+    char temp[MAX_PATH];
+    string path;
+    #ifdef _WIN32
+        GetModuleFileName(NULL, temp, MAX_PATH);
+        path = temp;
+    #elif __linux__
+        path = filesystem::canonical("/proc/self/exe");
+    #else
+        return getCallPath();
+    #endif
+    filesystem::path pth(path);
     return pth.parent_path().string();
 }
 
