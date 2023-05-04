@@ -2,6 +2,7 @@
 #include <vector>
 #include <unordered_map>
 #include "dictionary.hpp"
+#include "path.hpp"
 
 using namespace std;
 
@@ -47,15 +48,12 @@ string getLanguage(vector<string>& args, const unordered_map<string, string>& co
 
 string setDictionaryFile(string language, const unordered_map<string, string>& config)
 {
-    string dictionary = config.at("DictionaryPath");
-    if(dictionary.back() != '/') {
-        for(int i = dictionary.size()-1; i >= 0; i--) {
-            if(dictionary[i] == '.') { // must be a file
-                break;
-            } else if(dictionary[i] == '/' || i == 0) {
-                dictionary += "/";
-                break;
-            }
+    string dictionary = joinPath(getExecutableFilePath(), config.at("DictionaryPath"));
+    if(isFile(dictionary)) {
+        return dictionary;
+    } else {
+        if(!isDirectorySeparator(dictionary.back())) {
+            dictionary += directorySeparator();
         }
     }
     for(int i = 0; i < language.size(); i++) {

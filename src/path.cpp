@@ -40,6 +40,18 @@ bool invalidFilenameChar(char ch)
     }
 }
 
+bool isFile(const string& path)
+{
+    filesystem::path p = path;
+    return filesystem::is_regular_file(p);
+}
+
+bool isFolder(const string& path)
+{
+    filesystem::path p = path;
+    return filesystem::is_directory(p);
+}
+
 bool isDirectorySeparator(char ch)
 {
     char preferred = std::filesystem::path::preferred_separator;
@@ -47,6 +59,11 @@ bool isDirectorySeparator(char ch)
         return true;
     }
     return false;
+}
+
+char directorySeparator()
+{
+    return filesystem::path::preferred_separator;
 }
 
 string getCallPath()
