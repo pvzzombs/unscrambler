@@ -87,7 +87,7 @@ string getConfigPath(vector<string>& args)
         }
     }
     #ifdef NDEBUG
-        return getExecutableFilePath() + "\\config.txt";
+        return joinPath(getExecutableFilePath(), "config.txt");
     #else
         return joinPath(getExecutableFilePath(), "../../dictionary/config.txt");
     #endif

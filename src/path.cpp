@@ -42,28 +42,11 @@ bool invalidFilenameChar(char ch)
 
 bool isDirectorySeparator(char ch)
 {
-    #ifdef _WIN32
-        if(ch == '/' || ch == '\\') {
-            return true;
-        } else {
-            return false;
-        }
-    #elif __linux__
-        if(ch == '/') {
-            return true;
-        } else {
-            return false;
-        }
-    #elif __APPLE__
-        if(ch == ':') {
-            return true;
-        } else {
-            return false;
-        }
-    #else
-        std::cerr << "[Error] Unknown Operating System" << std::endl;
-        return false;
-    #endif
+    char preferred = std::filesystem::path::preferred_separator;
+    if(ch == preferred || ch == '/' && preferred == '\\') {
+        return true;
+    }
+    return false;
 }
 
 string getCallPath()
@@ -86,29 +69,5 @@ string joinPath(const string& path, const string& child_path)
 {
     filesystem::path p1(path);
     filesystem::path p2(child_path);
-
-    if(p2.is_absolute()) {
-        return p2.string();
-    }
-
-    string temp;
-    for(int i = 0; i < child_path.size(); i++) {
-        if(isDirectorySeparator(child_path[i]) || i == child_path.size()-1) {
-            if(i == child_path.size()-1 && !isDirectorySeparator(child_path[i])) {
-                temp.push_back(child_path[i]);
-            }
-            if(temp == ".") {
-                p1 = filesystem::path(getCallPath());
-            } else if(temp == "..") {
-                p1 = p1.parent_path();
-            } else {
-                p1 /= temp;
-            }
-            temp.clear();
-        } else {
-            temp.push_back(child_path[i]);
-        }
-    }
-
-    return p1.string();
+    return filesystem::weakly_canonical(p1 / p2).string();
 }
