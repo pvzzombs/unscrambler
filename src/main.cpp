@@ -1,8 +1,10 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
+#include <filesystem>
 #include <unordered_map>
 #include <string>
+#include <windows.h>
 #include "dictionary.hpp"
 #include "substring.hpp"
 #include "unscramble.hpp"
@@ -57,6 +59,15 @@ void showHelp(const string& program, const unordered_map<string, string>& config
     printConfig(config);
 }
 
+string getExecutableFilePath()
+{
+    char path[MAX_PATH];
+    GetModuleFileName(NULL, path, MAX_PATH);
+    string p(path);
+    filesystem::path pth(p);
+    return pth.parent_path().string();
+}
+
 string getConfigPath(vector<string>& args)
 {
     for(int i = 0; i < args.size(); i++) {
@@ -85,7 +96,7 @@ string getConfigPath(vector<string>& args)
         }
     }
     #ifdef NDEBUG
-        return "config.txt";
+        return getExecutableFilePath() + "\\config.txt";
     #else
         return "../../dictionary/config.txt";
     #endif
