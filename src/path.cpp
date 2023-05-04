@@ -78,14 +78,15 @@ string getCallPath()
 string getExecutableFilePath()
 {
     char path[MAX_PATH];
+    filesystem::path pth;
     #ifdef _WIN32
         GetModuleFileName(NULL, path, MAX_PATH);
+        pth = path;
     #elif __linux__
-        path = filesystem::canonical("/proc/self/exe");
+        pth = filesystem::canonical("/proc/self/exe");
     #else
         return getCallPath();
     #endif
-    filesystem::path pth(path);
     return pth.parent_path().string();
 }
 
