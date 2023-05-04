@@ -77,11 +77,9 @@ string getCallPath()
 
 string getExecutableFilePath()
 {
-    char temp[MAX_PATH];
-    string path;
+    char path[MAX_PATH];
     #ifdef _WIN32
-        GetModuleFileName(NULL, temp, MAX_PATH);
-        path = temp;
+        GetModuleFileName(NULL, path, MAX_PATH);
     #elif __linux__
         path = filesystem::canonical("/proc/self/exe");
     #else
