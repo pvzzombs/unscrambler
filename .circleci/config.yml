@@ -11,7 +11,7 @@ jobs:
           command: 'sed -i s/deb.debian.org/archive.debian.org/g /etc/apt/sources.list'
       - run:
           name: Prepare package links (2)
-          command: 'sed -i "s|security.debian.org|archive.debian.org/|g\" /etc/apt/sources.list'
+          command: 'sed -i "s|security.debian.org|archive.debian.org/|g" /etc/apt/sources.list'
       - run:
           name: Prepare package links (3)
           command: 'sed -i "/stretch-updates/d" /etc/apt/sources.list'
