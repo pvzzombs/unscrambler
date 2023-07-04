@@ -12,7 +12,6 @@
     #include <mach-o/dyld.h>
 #endif
 
-
 namespace path {
     
     enum class CopyOption {None, SkipExisting, OverwriteExisting, OverwriteAll};

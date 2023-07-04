@@ -321,27 +321,27 @@ class CLI {
             return subcommands.at(subcmd).at(flag);
         }
 
-        std::string getValueOf(int occurance = 1)
+        std::string getValueOf(int occurance = 1) const
         {
             return getValueOf(active_subcommand, occurance);
         }
 
-        std::string getValueOf(const std::initializer_list<std::string>& flag, int occurance = 1)
+        std::string getValueOf(const std::initializer_list<std::string>& flag, int occurance = 1) const
         {
             return getValueOf(std::vector<std::string>(flag), occurance);
         }
 
-        std::string getValueOf(const std::vector<std::string>& flag, int occurance = 1)
+        std::string getValueOf(const std::vector<std::string>& flag, int occurance = 1) const
         {
             for(int i = 0; i < flag.size(); i++) {
                 if(isFlagActive(flag[i])) {
                     return getValueOf(flag[i], occurance);
                 }
             }
-            return std::string();
+            throw CLIException("[Error][getValueOf] None of the flags are in the argument list");
         }
 
-        std::string getValueOf(const std::string& flag, int occurance = 1)
+        std::string getValueOf(const std::string& flag, int occurance = 1) const
         {
             if(occurance < 1) {
                 occurance = 1;
@@ -351,7 +351,7 @@ class CLI {
             if(isValidFlag(flag)) {
                 int flag_pos = subcommands.at(active_subcommand).at(flag);
                 if(flag_pos < 0) {
-                    throw CLIException("[Error][getAllValuesOf] Flag \"" + flag + "\" is not in the argument list");
+                    throw CLIException("[Error][getValueOf] Flag \"" + flag + "\" is not in the argument list");
                 }
 
                 std::string temp = args[flag_pos];
@@ -404,7 +404,7 @@ class CLI {
                     return getAllValuesOf(flag[i], limit);
                 }
             }
-            return std::vector<std::string>();
+            throw CLIException("[Error][getAllValuesOf] None of the flags is in the argument list");
         }
 
         std::vector<std::string> getAllValuesOf(const std::string& flag, int limit = -1) const
@@ -557,19 +557,34 @@ class CLI {
         bool isFlagActive(const std::string& flag) const
         {
             if(subcommands.at(active_subcommand).count(flag) < 1) {
-                throw CLIException("[Error][" + std::string(__func__) + "] \"" + flag + "\" is not a valid flag");
+                throw CLIException("[Error][" + std::string(__func__) + "] \"" + flag + "\" is not a valid flag of \"" + active_subcommand + "\"");
             }
             return subcommands.at(active_subcommand).at(flag) >= 0;
         }
 
-        bool isFlagActive(const std::string& subcmd, const std::string& flag) const // checks if a flag is initialized
+        bool isFlagActive(const std::initializer_list<std::string>& flag) const
         {
-            if(!isValidSubcommand(subcmd)) {
-                throw CLIException("[Error][" + std::string(__func__) + "] \"" + subcmd + "\" is not a valid subcommand");
-            } else if(subcommands.at(subcmd).count(flag) < 1) {
-                throw CLIException("[Error][" + std::string(__func__) + "] \"" + flag + "\" is not a valid flag");
+            return isFlagActive(std::vector<std::string>(flag));
+        }
+
+        bool isFlagActive(const std::vector<std::string>& flag) const
+        {
+            for(int i = 0; i < flag.size(); i++) {
+                if(isFlagActive(flag[i])) {
+                    return true;
+                }
             }
-            return subcommands.at(subcmd).at(flag) >= 0;
+            return false;
+        }
+
+        bool areFlagsActive(const std::vector<std::string>& flag) const
+        {
+            for(int i = 0; i < flag.size(); i++) {
+                if(!isFlagActive(flag[i])) {
+                    return false;
+                }
+            }
+            return true;
         }
 
         bool isValidFlag(const std::string& flag) const 

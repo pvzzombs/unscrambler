@@ -1,8 +1,5 @@
-#include <iostream>
-#include <vector>
 #include <unordered_map>
-#include <cctype>
-#include <fstream>
+#include "path.hpp"
 #include "unscramble.hpp"
 
 using namespace std;
