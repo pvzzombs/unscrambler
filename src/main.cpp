@@ -1,14 +1,28 @@
 #include "cli.hpp"
 #include "path.hpp"
-#include "substring.hpp"
 #include "unscramble.hpp"
-#include "complete.hpp"
 
 void printConfig(const std::unordered_map<std::string, std::string>& config)
 {
     for(const auto& i : config) {
         std::cout << i.first << ": " << i.second << std::endl;
     }
+}
+
+template<typename T>
+void print(const std::vector<T>& v)
+{
+    for(int i = 0; i < v.size(); i++) {
+        std::cout << v[i] << std::endl;
+    }
+}
+
+std::string toLower(std::string str)
+{
+    for(int i = 0; i < str.size(); i++) {
+        str[i] = tolower(str[i]);
+    }
+    return str;
 }
 
 void showHelp(const std::string& program, const std::unordered_map<std::string, std::string>& config)
@@ -97,14 +111,15 @@ std::unordered_map<std::string, std::string> readConfig(std::string config_path)
 int main(int argc, char* argv[])
 {
     CLI cli(argc, argv);
+    cli.setArguments({"unscrambler", "-u", "beavre"});
     std::string program_name = cli.getProgramName();
-    std::unordered_map<std::string, std::string> config = readConfig(getConfigPath(cli));
     try {
         cli.setValidFlags({"-h", "--help", "-u", "--unscramble", "-c", 
         "--complete", "-s", "--substring", "-L", "--Language", "--config-path", 
         "--set-dictionary-path", "--set-default-language"});
+        std::unordered_map<std::string, std::string> config = readConfig(getConfigPath(cli));
 
-        if(cli.isFlagActive("-h") || cli.isFlagActive("--help")) {
+        if(cli.isFlagActive({"-h", "--help"})) {
             showHelp(program_name, config);
             return 0;
         }
@@ -114,10 +129,27 @@ int main(int argc, char* argv[])
             language = cli.getValueOf({"-L", "--Language"});
         }
 
+        if(language.empty()) {
+            language = config.at("DefaultLanguage");
+        }
+
+        std::vector<std::string> result;
         std::string word;
+        std::string dictionary_path = path::join(config.at("DictionaryPath"), toLower(language) + ".txt");
         if(cli.isFlagActive({"-u", "--unscramble"})) {
             word = cli.getValueOf({"-u", "--unscramble"});
+            result = unscramble(word, dictionary_path, cli);
+        } else if(cli.isFlagActive({"-s", "--substring"})) {
             
+        }
+
+        std::cout << "Language: " << language << std::endl;
+        std::cout << "Word: " << word << std::endl;
+        std::cout << "=====MATCHES====" << std::endl;
+        if(result.empty()){
+            std::cout << "<No words match>" << std::endl;
+        } else {
+            print(result);
         }
 
     } catch(const CLIException& e) {

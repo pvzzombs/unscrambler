@@ -1,12 +1,14 @@
 #include <unordered_map>
-#include "path.hpp"
+#include <fstream>
+#include "cli.hpp"
 #include "unscramble.hpp"
 
 using namespace std;
 
-bool isAnagram(const string& word1, const string& word2, const unordered_map<string, bool>& options = {})
+bool isAnagram(const std::string& word1, const std::string& word2, const CLI& cli)
 {
-    if(options.at("-s") || options.at("--substring")) { // substring option is on
+    bool substring = cli.isFlagActive({"-s", "--substring"});
+    if(substring) {
         if(word1.size() < word2.size()) {
             return false;
         }
@@ -16,15 +18,15 @@ bool isAnagram(const string& word1, const string& word2, const unordered_map<str
         }
     }
     // get frequencies of characters in word1 and word2
-    unordered_map<char, int> freq1;
-    unordered_map<char, int> freq2;
+    std::unordered_map<char, int> freq1;
+    std::unordered_map<char, int> freq2;
     for (const auto& c : word1) {
         freq1[c]++;
     }
     for (const auto& c : word2) {
         freq2[c]++;
     }
-    if(options.at("-s") || options.at("--substring")) {
+    if(substring) {
         for(const auto& i : freq2) {
             if(freq1.count(i.first) < 1) {
                 return false;
@@ -41,19 +43,19 @@ bool isAnagram(const string& word1, const string& word2, const unordered_map<str
     }
 }
 
-vector<string> unscramble(const string& target, const string& path, const unordered_map<string, bool>& options = {})
+std::vector<std::string> unscramble(const std::string& target, const std::string& path, const CLI& cli)
 {
-    ifstream dict(path);
-    vector<string> output;
-    string word;
+    std::ifstream dict(path);
+    std::vector<std::string> output;
+    std::string word;
     if(dict.is_open()) {
         while(dict >> word) {
-            if(isAnagram(target, word, options)) {
+            if(isAnagram(target, word, cli)) {
                 output.push_back(word);
             }
         }
     } else {
-        cout << "[Error] Could not open dictionary \"" << path << "\"" << endl;
+        throw std::runtime_error("[Error] Could not open dictionary");
     }
     return output;
 }
