@@ -4,7 +4,7 @@
 
 using namespace std;
 
-bool isSubstring(const string& word1, const string& word2) // O(n)
+bool isSubstring(const string& word1, const string& word2) 
 {
     if(word1.size() < word2.size()) {
         return false;
