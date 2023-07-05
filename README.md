@@ -25,13 +25,12 @@ cmake --build .
 ## How To Use
 ### Format
 ```
-Unscrambler <OPTIONS> <WORD>
-Unscrambler -L <LANGUAGE> <OPTION> <WORD>
+unscrambler <options> <word> [-L <language>]
 ```
 ### Usage
 ```
 Unscrambler -u srtekri
-Unscrambler -L Filipino -u putnagnai
+Unscrambler -u putnagnai -L Filipino
 ```
 ### Options
 ```
@@ -39,18 +38,14 @@ Unscrambler -L Filipino -u putnagnai
 -u, --unscramble       Unscramble the input word into an actual word
 -c, --complete         Complete the unfinished input word into an actual word
 -s, --substring        Give words that make up the input word
-```
-### Language
-```
--L, --Language         Specify language
+-L, --Language         Set language
+--set-config-path      Set where to look for the config file
+--set-dictionary-path  Set the path where unscrambler will look for dictionaries
+--set-default-language Set the default language
 ```
 ### Supported Languages
 * English
 * Filipino
-### Add Configuration File
-```
---config="path/to/config.txt"
-```
 ### Configuration Options
 * DictionaryPath
 * DefaultLanguage
