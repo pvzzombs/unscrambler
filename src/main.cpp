@@ -37,6 +37,7 @@ void showHelp(const std::string& program, const std::unordered_map<std::string, 
     std::cout << "-c, --complete          Complete word" << std::endl;
     std::cout << "-s, --substring         Give the ordered substrings of the word" << std::endl;
     std::cout << "-L, --Language          Set language" << std::endl;
+    std::cout << "--set-config-path       Set where to look for the config file" << std::endl;
     std::cout << "--set-dictionary-path   Set the path where unscrambler will look for dictionaries" << std::endl;
     std::cout << "--set-default-language  Set the default language" << std::endl;
     std::cout << "SUPPORTED LANGUAGES:" << std::endl;
@@ -85,8 +86,8 @@ std::string getConfigPath(const CLI& cli)
         return config_path;
     }
 
-    if(cli.isFlagActive("--config-path")) {
-        std::string temp_path = cli.getValueOf("--config-path");
+    if(cli.isFlagActive("--set-config-path")) {
+        std::string temp_path = path::join(path::currentPath(), cli.getValueOf("--set-config-path"));
         if(path::exists(temp_path)) {
             path::copy(temp_path, path::sourcePath(), path::CopyOption::OverwriteExisting);
             return config_path;
@@ -148,7 +149,7 @@ int main(int argc, char* argv[])
     std::string program_name = cli.getProgramName();
     try {
         cli.setValidFlags({"-h", "--help", "-u", "--unscramble", "-c", 
-        "--complete", "-s", "--substring", "-L", "--Language", "--config-path", 
+        "--complete", "-s", "--substring", "-L", "--Language", "--set-config-path", 
         "--set-dictionary-path", "--set-default-language"});
 
         std::string config_path = getConfigPath(cli);
@@ -199,6 +200,10 @@ int main(int argc, char* argv[])
         } else if(cli.isFlagActive({"-c", "--complete"})) {
             word = cli.getValueOf({"-c", "--complete"});
             result = complete(word, dictionary_path);
+        }
+
+        if(word.empty()) {
+            return 0;
         }
 
         std::cout << "Language: " << language << std::endl;
