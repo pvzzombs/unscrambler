@@ -36,14 +36,46 @@ void showHelp(const std::string& program, const std::unordered_map<std::string, 
     std::cout << "-u, --unscramble        Unscramble word" << std::endl;
     std::cout << "-c, --complete          Complete word" << std::endl;
     std::cout << "-s, --substring         Give the ordered substrings of the word" << std::endl;
-    std::cout << "-L, --Language          Provide a language" << std::endl;
+    std::cout << "-L, --Language          Set language" << std::endl;
+    std::cout << "--set-dictionary-path   Set the path where unscrambler will look for dictionaries" << std::endl;
+    std::cout << "--set-default-language  Set the default language" << std::endl;
     std::cout << "SUPPORTED LANGUAGES:" << std::endl;
     std::cout << "English" << std::endl;
     std::cout << "Filipino" << std::endl;
-    std::cout << "ADD CONFIGURATION FILE:" << std::endl;
-    std::cout << "--config=\"path/to/config.txt\"" << std::endl;
     std::cout << "CONFIG OPTIONS:" << std::endl;
     printConfig(config);
+}
+
+void changeConfigValue(const std::string& config_path, const std::string& find, const std::string& new_val)
+{
+    std::string new_config = path::join(path::sourcePath(), "config_temp.txt");
+    std::ifstream input(config_path);
+    std::ofstream output(new_config);
+
+    std::string temp;
+    if(input.is_open() && output.is_open()) {
+        while(getline(input, temp)) {
+            if(!temp.empty() && temp[0] == '#') {
+                output << temp << std::endl;
+                continue;
+            }
+
+            size_t f = temp.find(find);
+            if(f != std::string::npos) {
+                output << find << " = \"" << new_val << "\"" << std::endl;
+            } else {
+                output << temp << std::endl;
+            }
+        }
+
+        input.close();
+        output.close();
+
+        path::remove(config_path);
+        path::rename(new_config, "config.txt");
+    } else {
+        throw std::runtime_error("[Error] Could not open file");
+    }
 }
 
 std::string getConfigPath(const CLI& cli)
@@ -113,18 +145,36 @@ std::unordered_map<std::string, std::string> readConfig(std::string config_path)
 int main(int argc, char* argv[])
 {
     CLI cli(argc, argv);
-    //cli.setArguments({"unscrambler", "-u", "beavre"});
     std::string program_name = cli.getProgramName();
     try {
         cli.setValidFlags({"-h", "--help", "-u", "--unscramble", "-c", 
         "--complete", "-s", "--substring", "-L", "--Language", "--config-path", 
         "--set-dictionary-path", "--set-default-language"});
 
-        std::unordered_map<std::string, std::string> config = readConfig(getConfigPath(cli));
+        std::string config_path = getConfigPath(cli);
+        std::unordered_map<std::string, std::string> config = readConfig(config_path);
 
         if(cli.isFlagActive({"-h", "--help"})) {
             showHelp(program_name, config);
             return 0;
+        }
+
+        if(cli.isFlagActive("--set-dictionary-path")) {
+            std::string new_path = cli.getValueOf("--set-dictionary-path");
+            if(!new_path.empty()) {
+                changeConfigValue(config_path, "DictionaryPath", new_path);
+                std::cout << "[Success] Dictionary path is been changed successfully" << std::endl;
+                return 0;
+            }
+        }
+
+        if(cli.isFlagActive("--set-default-language")) {
+            std::string new_language = cli.getValueOf("--set-default-language");
+            if(!new_language.empty()) {
+                changeConfigValue(config_path, "DefaultLanguage", new_language);
+                std::cout << "[Success] Default language has been changed successfully" << std::endl;
+                return 0;
+            }
         }
 
         std::string language;
@@ -139,7 +189,7 @@ int main(int argc, char* argv[])
         std::vector<std::string> result;
         std::string word;
         std::string dictionary_path = path::join({path::sourcePath(), config.at("DictionaryPath"), toLower(language) + ".txt"});
-        std::cout << dictionary_path << std::endl;
+
         if(cli.isFlagActive({"-u", "--unscramble"})) {
             word = cli.getValueOf({"-u", "--unscramble"});
             result = unscramble(word, dictionary_path, cli);
