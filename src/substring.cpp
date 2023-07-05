@@ -2,9 +2,7 @@
 #include <vector>
 #include <fstream>
 
-using namespace std;
-
-bool isSubstring(const string& word1, const string& word2) 
+bool isSubstring(const std::string& word1, const std::string& word2) 
 {
     if(word1.size() < word2.size()) {
         return false;
@@ -32,11 +30,11 @@ bool isSubstring(const string& word1, const string& word2)
     return false;
 }
 
-vector<string> substring(const string& target, const string& path)
+std::vector<std::string> substring(const std::string& target, const std::string& path)
 {
-    ifstream dict(path);
-    vector<string> output;
-    string word;
+    std::ifstream dict(path);
+    std::vector<std::string> output;
+    std::string word;
     if(dict.is_open()) {
         while(dict >> word) {
             if(isSubstring(target, word)) {
@@ -44,7 +42,7 @@ vector<string> substring(const string& target, const string& path)
             }
         }
     } else {
-        cout << "[Error] Could not open dictionary \"" << path << "\"" << endl;
+        std::cout << "[Error] Could not open dictionary \"" << path << "\"" << std::endl;
     }
     return output;
 }

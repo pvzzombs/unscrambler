@@ -3,9 +3,7 @@
 #include <fstream>
 #include "complete.hpp"
 
-using namespace std;
-
-bool isCompleteWord(const string& incomplete, const string& complete)
+bool isCompleteWord(const std::string& incomplete, const std::string& complete)
 {
     if(complete.size() <= incomplete.size()) {
         return false;
@@ -19,11 +17,11 @@ bool isCompleteWord(const string& incomplete, const string& complete)
     return true;
 }
 
-vector<string> complete(const string& input, const string& path)
+std::vector<std::string> complete(const std::string& input, const std::string& path)
 {
-    ifstream dict(path);
-    vector<string> output;
-    string word;
+    std::ifstream dict(path);
+    std::vector<std::string> output;
+    std::string word;
     if(dict.is_open()) {
         while(dict >> word) {
             if(isCompleteWord(input, word)) {
@@ -31,7 +29,7 @@ vector<string> complete(const string& input, const string& path)
             }
         }
     } else {
-        cout << "[Error] Could not open dictionary \"" << path << "\"" << endl;
+        std::cout << "[Error] Could not open dictionary \"" << path << "\"" << std::endl;
     }
     return output;
 }

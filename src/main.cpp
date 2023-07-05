@@ -1,6 +1,8 @@
 #include "cli.hpp"
 #include "path.hpp"
 #include "unscramble.hpp"
+#include "substring.hpp"
+#include "complete.hpp"
 
 void printConfig(const std::unordered_map<std::string, std::string>& config)
 {
@@ -111,12 +113,13 @@ std::unordered_map<std::string, std::string> readConfig(std::string config_path)
 int main(int argc, char* argv[])
 {
     CLI cli(argc, argv);
-    cli.setArguments({"unscrambler", "-u", "beavre"});
+    //cli.setArguments({"unscrambler", "-u", "beavre"});
     std::string program_name = cli.getProgramName();
     try {
         cli.setValidFlags({"-h", "--help", "-u", "--unscramble", "-c", 
         "--complete", "-s", "--substring", "-L", "--Language", "--config-path", 
         "--set-dictionary-path", "--set-default-language"});
+
         std::unordered_map<std::string, std::string> config = readConfig(getConfigPath(cli));
 
         if(cli.isFlagActive({"-h", "--help"})) {
@@ -135,12 +138,17 @@ int main(int argc, char* argv[])
 
         std::vector<std::string> result;
         std::string word;
-        std::string dictionary_path = path::join(config.at("DictionaryPath"), toLower(language) + ".txt");
+        std::string dictionary_path = path::join({path::sourcePath(), config.at("DictionaryPath"), toLower(language) + ".txt"});
+        std::cout << dictionary_path << std::endl;
         if(cli.isFlagActive({"-u", "--unscramble"})) {
             word = cli.getValueOf({"-u", "--unscramble"});
             result = unscramble(word, dictionary_path, cli);
         } else if(cli.isFlagActive({"-s", "--substring"})) {
-            
+            word = cli.getValueOf({"-s", "--substring"});
+            result = substring(word, dictionary_path);
+        } else if(cli.isFlagActive({"-c", "--complete"})) {
+            word = cli.getValueOf({"-c", "--complete"});
+            result = complete(word, dictionary_path);
         }
 
         std::cout << "Language: " << language << std::endl;
@@ -155,6 +163,10 @@ int main(int argc, char* argv[])
     } catch(const CLIException& e) {
         std::cout << e.what() << std::endl;
         return 1;
+    } catch(const std::runtime_error& e) {
+        std::cout << e.what() << std::endl;
+        return 1;
     }
+
     return 0;
 }
